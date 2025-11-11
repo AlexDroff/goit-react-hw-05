@@ -15,14 +15,15 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [debouncedSearch] = useDebounce<string>(search, 500);
+  const [debouncedSearch] = useDebounce(search, 500); // відкладений пошук
 
   const queryClient = useQueryClient();
+  const perPage = 12;
 
-  // --- useQuery (v5 Object form)
+  // --- useQuery для нотаток
   const { data, isLoading, isError } = useQuery<FetchNotesResponse, Error>({
-    queryKey: ["notes", { search: debouncedSearch, page }],
-    queryFn: () => fetchNotes({ search: debouncedSearch, page }),
+    queryKey: ["notes", { search: debouncedSearch, page, perPage }],
+    queryFn: () => fetchNotes({ search: debouncedSearch, page, perPage }),
     staleTime: 5000,
   });
 
@@ -53,13 +54,13 @@ function App() {
     deleteNoteMutation.mutate(id);
   };
 
-  const totalPages =
-    data?.total && data?.perPage ? Math.ceil(data.total / data.perPage) : 1;
+  const totalPages = data?.totalPages ?? 1;
 
   return (
     <div className={styles.app}>
       <header className={styles.toolbar}>
-        <SearchBox value={search} onChange={setSearch} />
+        <SearchBox value={search} onChange={setSearch} />{" "}
+        {/* білий фон у SearchBox */}
         {totalPages > 1 && (
           <Pagination
             page={page}
@@ -74,8 +75,11 @@ function App() {
 
       {isLoading && <p>Loading notes...</p>}
       {isError && <p>Error loading notes</p>}
-      {data?.data && data.data.length > 0 && (
-        <NoteList notes={data.data} onDelete={handleDeleteNote} />
+
+      {data?.notes?.length ? (
+        <NoteList notes={data.notes} onDelete={handleDeleteNote} />
+      ) : (
+        !isLoading && <p>No notes found.</p>
       )}
 
       {isModalOpen && (

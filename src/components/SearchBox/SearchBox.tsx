@@ -1,5 +1,4 @@
 import type { ChangeEvent } from "react";
-import { useDebounce } from "use-debounce";
 import styles from "./SearchBox.module.css";
 
 interface SearchBoxProps {
@@ -8,8 +7,6 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ value, onChange }: SearchBoxProps) => {
-  const [debouncedValue] = useDebounce(value, 500);
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
@@ -19,7 +16,7 @@ const SearchBox = ({ value, onChange }: SearchBoxProps) => {
       className={styles.input}
       type="text"
       placeholder="Search notes"
-      value={debouncedValue}
+      value={value}
       onChange={handleChange}
     />
   );

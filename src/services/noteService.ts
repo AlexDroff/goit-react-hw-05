@@ -1,4 +1,3 @@
-// src/services/noteService.ts
 import axios from "axios";
 import type { Note, NoteTag } from "../types/note";
 
@@ -20,10 +19,7 @@ export interface FetchNotesParams {
 }
 
 export interface FetchNotesResponse {
-  data: Note[];
-  page: number;
-  perPage: number;
-  total: number;
+  notes: Note[];
   totalPages: number;
 }
 
@@ -33,19 +29,17 @@ export interface CreateNotePayload {
   tag: NoteTag;
 }
 
-export const fetchNotes = async (
-  params: FetchNotesParams
-): Promise<FetchNotesResponse> => {
+export const fetchNotes = async (params: FetchNotesParams) => {
   const response = await client.get<FetchNotesResponse>("/notes", { params });
   return response.data;
 };
 
-export const createNote = async (payload: CreateNotePayload): Promise<Note> => {
+export const createNote = async (payload: CreateNotePayload) => {
   const response = await client.post<Note>("/notes", payload);
   return response.data;
 };
 
-export const deleteNote = async (id: string): Promise<{ id: string }> => {
+export const deleteNote = async (id: string) => {
   const response = await client.delete<{ id: string }>(`/notes/${id}`);
   return response.data;
 };
