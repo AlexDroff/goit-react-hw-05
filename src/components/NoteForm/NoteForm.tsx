@@ -36,7 +36,6 @@ const NoteForm: FC<NoteFormProps> = ({ onSubmit, onClose }) => {
               name="title"
               type="text"
               className={styles.input}
-              style={{ backgroundColor: "#fff" }}
             />
             <ErrorMessage
               name="title"
@@ -53,7 +52,6 @@ const NoteForm: FC<NoteFormProps> = ({ onSubmit, onClose }) => {
               name="content"
               rows={6}
               className={styles.textarea}
-              style={{ backgroundColor: "#fff" }}
             />
             <ErrorMessage
               name="content"

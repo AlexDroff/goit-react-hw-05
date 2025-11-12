@@ -15,7 +15,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [debouncedSearch] = useDebounce(search, 500); // відкладений пошук
+  const [debouncedSearch] = useDebounce(search, 500);
 
   const queryClient = useQueryClient();
   const perPage = 12;
