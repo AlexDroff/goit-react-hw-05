@@ -20,14 +20,12 @@ function App() {
   const queryClient = useQueryClient();
   const perPage = 12;
 
-  // --- useQuery для нотаток
   const { data, isLoading, isError } = useQuery<FetchNotesResponse, Error>({
     queryKey: ["notes", { search: debouncedSearch, page, perPage }],
     queryFn: () => fetchNotes({ search: debouncedSearch, page, perPage }),
     staleTime: 5000,
   });
 
-  // --- useMutation для створення нотатки
   const createNoteMutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
@@ -36,7 +34,6 @@ function App() {
     },
   });
 
-  // --- useMutation для видалення нотатки
   const deleteNoteMutation = useMutation({
     mutationFn: (id: string) => deleteNote(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notes"] }),
@@ -60,7 +57,6 @@ function App() {
     <div className={styles.app}>
       <header className={styles.toolbar}>
         <SearchBox value={search} onChange={setSearch} />{" "}
-        {/* білий фон у SearchBox */}
         {totalPages > 1 && (
           <Pagination
             page={page}
