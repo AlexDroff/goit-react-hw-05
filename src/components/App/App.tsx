@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
-import type { NoteTag } from "../../types/note";
+import { fetchNotes, deleteNote } from "../../services/noteService";
 import type { FetchNotesResponse } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
 import SearchBox from "../SearchBox/SearchBox";
@@ -24,28 +23,19 @@ function App() {
     queryKey: ["notes", { search: debouncedSearch, page, perPage }],
     queryFn: () => fetchNotes({ search: debouncedSearch, page, perPage }),
     staleTime: 5000,
-  });
-
-  const createNoteMutation = useMutation({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      setIsModalOpen(false);
-    },
+    placeholderData:
+      page > 1
+        ? queryClient.getQueryData<FetchNotesResponse>([
+            "notes",
+            { search: debouncedSearch, page: page - 1, perPage },
+          ])
+        : undefined,
   });
 
   const deleteNoteMutation = useMutation({
     mutationFn: (id: string) => deleteNote(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notes"] }),
   });
-
-  const handleCreateNote = (values: {
-    title: string;
-    content?: string;
-    tag: NoteTag;
-  }) => {
-    createNoteMutation.mutate(values);
-  };
 
   const handleDeleteNote = (id: string) => {
     deleteNoteMutation.mutate(id);
@@ -80,10 +70,7 @@ function App() {
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm
-            onSubmit={handleCreateNote}
-            onClose={() => setIsModalOpen(false)}
-          />
+          <NoteForm onClose={() => setIsModalOpen(false)} />
         </Modal>
       )}
     </div>

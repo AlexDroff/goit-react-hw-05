@@ -40,6 +40,6 @@ export const createNote = async (payload: CreateNotePayload) => {
 };
 
 export const deleteNote = async (id: string) => {
-  const response = await client.delete<{ id: string }>(`/notes/${id}`);
+  const response = await client.delete<Note>(`/notes/${id}`);
   return response.data;
 };
